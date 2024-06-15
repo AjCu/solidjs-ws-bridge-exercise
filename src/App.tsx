@@ -3,12 +3,20 @@ import { createSignal, For, onCleanup } from "solid-js";
 import { hc } from "hono/client";
 import styles from "./App.module.css";
 import { CarsArray } from "./models/types";
-
+import leftCar from "./assets/images/left-car.png";
+import rightCar from "./assets/images/right-car.png";
 const client = hc("http://localhost:3000");
 const ws = client.ws.$ws(0);
 
 const [carsArray, setCarsArray] = createSignal<CarsArray>([]);
 
+const getCarImageBasedOnDirection = (direction: string) => {
+  if (direction === "left") {
+    return leftCar;
+  } else {
+    return rightCar;
+  }
+};
 const generateRandomTime = () => {
   return Math.floor(Math.random() * 5) + 3;
 };
@@ -95,9 +103,14 @@ const App: Component = () => {
           <For each={carsArray()} fallback={<div>No cars in the bridge</div>}>
             {(car) => (
               <div class={"card"}>
-                <h4>id:{car.id}</h4>
-                <p>{car.direction}</p>
-                <p>segundos {car.time}</p>
+                <h4>id: {car.id}</h4>
+                <img
+                  src={getCarImageBasedOnDirection(car.direction)}
+                  alt="Car image"
+                  width={100}
+                />
+                <p>Direccion: {car.direction}</p>
+                <p>Segundos: {car.time}</p>
               </div>
             )}
           </For>
